@@ -15,7 +15,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Loader2 } from "lucide-react";
+import { Loader2, Mail, CheckCircle2 } from "lucide-react";
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -24,6 +24,7 @@ export default function SignUpPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,8 +39,8 @@ export default function SignUpPage() {
       },
       {
         onSuccess: () => {
-          router.push("/");
-          router.refresh();
+          setSuccess(true);
+          setLoading(false);
         },
         onError: (ctx) => {
           setError(ctx.error.message || "Failed to sign up");
@@ -48,6 +49,50 @@ export default function SignUpPage() {
       }
     );
   };
+
+  if (success) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background p-4">
+        <Card className="w-full max-w-md">
+          <CardHeader className="space-y-1 text-center">
+            <div className="flex justify-center mb-4">
+              <div className="rounded-full bg-primary/10 p-3">
+                <Mail className="h-6 w-6 text-primary" />
+              </div>
+            </div>
+            <CardTitle className="text-2xl font-bold">Check your email</CardTitle>
+            <CardDescription>
+              We sent a verification link to <strong>{email}</strong>
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-start gap-3 p-3 bg-muted rounded-md">
+              <CheckCircle2 className="h-5 w-5 text-green-500 mt-0.5" />
+              <div className="text-sm">
+                <p className="font-medium">Account created successfully!</p>
+                <p className="text-muted-foreground">
+                  Click the link in your email to verify your account and sign in.
+                </p>
+              </div>
+            </div>
+            <p className="text-xs text-muted-foreground text-center">
+              Didn&apos;t receive the email? Check your spam folder or{" "}
+              <Link href="/sign-up" className="text-primary hover:underline">
+                try again
+              </Link>
+            </p>
+          </CardContent>
+          <CardFooter>
+            <Link href="/sign-in" className="w-full">
+              <Button variant="outline" className="w-full">
+                Back to sign in
+              </Button>
+            </Link>
+          </CardFooter>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
